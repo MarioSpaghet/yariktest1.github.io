@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hamster Yarik</title>
+    
+    <!-- Обновлённая Content-Security-Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline';">
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -1041,11 +1045,11 @@
                     </div>
                 </div>
 
-                <!-- Новый апгрейд: Лицензия на ГООООЛ ляндия -->
+                <!-- Новый апгрейд: Лицензия на ГОООООЛ ляндия -->
                 <div class="mine-upgrade" onclick="buyMineUpgrade('gooolLandiaLicense')">
-                    <img src="vis/goool-landia-license-icon.png" alt="Лицензия на ГООООЛ ляндия">
+                    <img src="vis/goool-landia-license-icon.png" alt="Лицензия на ГОООООЛ ляндия">
                     <div class="upgrade-info">
-                        <span>Лицензия на ГООООЛ ляндия</span>
+                        <span>Лицензия на ГОООООЛ ляндия</span>
                         <span class="profit">Прибыль в час: <span id="gooolLandiaLicenseProfit">180K</span></span>
                     </div>
                     <div class="upgrade-level">
@@ -1614,7 +1618,7 @@
         // Call initializeMineUpgrades after the DOM is loaded
         document.addEventListener('DOMContentLoaded', initializeMineUpgrades);
 
-        // Добавьте эту функцию для автоматическго начисления прибыли
+        // Добавьте эту функцию для автоматическго начисления приыли
         function autoGenerateProfit() {
             let totalProfit = 0;
             for (const upgradeType in mineUpgrades) {
@@ -1648,7 +1652,7 @@
                 
                 // Создание и отображение первого GIF (yap1.gif)
                 const yapGif = document.createElement('img');
-                yapGif.src = 'vis/yap1.gif?' + new Date().getTime();
+                yapGif.src = 'vis/yap1-1.webp?' + new Date().getTime();
                 yapGif.alt = 'Yap Animation';
                 yapGif.classList.add('yap-animation', 'fade-in');
                 
@@ -1735,7 +1739,7 @@
                             // Здесь можно добавить дополнительные действия после окончания всех анимаций и звуков
                         });
                     };
-                    aaahGif.src = 'vis/aaah.gif?' + new Date().getTime(); // Добавляем timestamp для предотвращения кэширования
+                    aaahGif.src = 'vis/aaah.webp?' + new Date().getTime(); // Добавляем timestamp для предотвращения кэширования
                 });
             });
         }
@@ -1810,7 +1814,7 @@
             
             // Заменяем yap2.gif на yap1.gif
             const yap1Gif = document.createElement('img');
-            yap1Gif.src = 'vis/yap1.gif?' + new Date().getTime();
+            yap1Gif.src = 'vis/yap1-1.webp?' + new Date().getTime();
             yap1Gif.alt = 'Yap Animation 1';
             yap1Gif.classList.add('yap-animation');
             
