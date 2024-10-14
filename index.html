@@ -497,43 +497,6 @@
             padding-bottom: 60px; /* Add padding at the bottom to prevent content from being hidden behind the menu */
         }
 
-        /* Стили для прелоадера */
-        #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #121212; /* Цвет фона прелоадера */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000; /* Поверх всех элементов */
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-            opacity: 1;
-            visibility: visible;
-        }
-
-        #preloader.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        /* Спиннер для прелоадера */
-        .spinner {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid #FFD700; /* Gold */
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         /* Add these styles to your existing <style> section */
         .mine-upgrades {
             display: grid;
@@ -807,36 +770,31 @@
             cursor: not-allowed;
         }
 
-        /* Стили для прелоадера */
-        #preloader {
+        /* Add loading screen at the top of the body */
+        #loadingScreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #121212; /* Цвет фона прелоадера */
+            background-color: #121212;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 2000; /* Поверх всех элементов */
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-            opacity: 1;
-            visibility: visible;
+            z-index: 9999;
+            color: white;
+            font-family: Arial, sans-serif;
         }
 
-        #preloader.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        /* Спиннер для прелоадера */
-        .spinner {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid #FFD700; /* Gold */
+        #loadingScreen .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #FFD700;
             border-radius: 50%;
             width: 60px;
             height: 60px;
-            animation: spin 1s linear infinite;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -844,95 +802,27 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Спиннер для прелоадера */
-        .spinner {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid #FFD700; /* Gold */
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-        }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        #loadingScreen p {
+            font-size: 24px;
+            color: #FFD700;
+            margin-top: 20px;
         }
     </style>
-
-    <!-- Предварительная загрузка изображений -->
-    <link rel="preload" as="image" href="vis/0b103c82b7a0b82e.png">
-    <link rel="preload" as="image" href="vis/circle@Фон.png">
-    <link rel="preload" as="image" href="vis/1.png">
-    <link rel="preload" as="image" href="vis/testtest.png">
-    <link rel="preload" as="image" href="vis/aaah.webp">
-    <link rel="preload" as="image" href="vis/yap1-1.webp">
-    <link rel="preload" as="image" href="vis/yap2.gif">
-    <link rel="preload" as="image" href="vis/britva.png">
-    <link rel="preload" as="image" href="vis/ham1.png">
-    <link rel="preload" as="image" href="vis/ham2.png">
-    <link rel="preload" as="image" href="vis/ham3.png">
-    <link rel="preload" as="image" href="vis/yap-animation.gif">
-    <link rel="preload" as="image" href="vis/fan-tokens-icon.png">
-    <link rel="preload" as="image" href="vis/staking-icon.png">
-    <link rel="preload" as="image" href="vis/btc-pairs-icon.png">
-    <link rel="preload" as="image" href="vis/eth-pairs-icon.png">
-    <link rel="preload" as="image" href="vis/cmc-pairs-icon.png">
-    <link rel="preload" as="image" href="vis/vbuck.png">
-    <link rel="preload" as="image" href="vis/pyaterochka-icon.png">
-    <link rel="preload" as="image" href="vis/perekrestok-icon.png">
-    <link rel="preload" as="image" href="vis/diksi-icon.png">
-    <link rel="preload" as="image" href="vis/fixprice-icon.png">
-    <link rel="preload" as="image" href="vis/investment-shit-icon.png">
-    <link rel="preload" as="image" href="vis/europe-license-icon.png">
-    <link rel="preload" as="image" href="vis/africa-license-icon.png">
-    <link rel="preload" as="image" href="vis/usa-license-icon.png">
-    <link rel="preload" as="image" href="vis/goool-landia-license-icon.png">
-    <link rel="preload" as="image" href="vis/anime-country-license-icon.png">
-    <link rel="preload" as="image" href="vis/kon-chen-yi-license-icon.png">
-    <link rel="preload" as="image" href="vis/sili-billi-license-icon.png">
-    <link rel="preload" as="image" href="vis/finger.png">
-    <link rel="preload" as="image" href="vis/battery.png">
-    <link rel="preload" as="image" href="vis/logo-hc-50-50-1.png">
-    <link rel="preload" as="image" href="game-icon.png">
-    <link rel="preload" as="image" href="mine-icon.png">
-    <link rel="preload" as="image" href="friends-icon.png">
-    <link rel="preload" as="image" href="earn-icon.png">
-    <link rel="preload" as="image" href="airdrop-icon.png">
-    <link rel="preload" as="image" href="lightning-icon.png">
-    <link rel="preload" as="image" href="turbo-icon.png">
-    <link rel="preload" as="image" href="energy-icon.png">
-    <link rel="preload" as="image" href="vis/BOOM_BOOM.gif">
-
-    <!-- Предварительная загрузка аудио файлов -->
-    <link rel="preload" as="audio" href="audio/boom.mp3">
-    <link rel="preload" as="audio" href="audio/yap1.mp3">
-    <link rel="preload" as="audio" href="audio/sbr1.mp3">
-    <link rel="preload" as="audio" href="audio/sbr2.mp3">
-    <link rel="preload" as="audio" href="audio/sbr3.mp3">
-    <link rel="preload" as="audio" href="audio/yap2.mp3">
-
-    <!-- Регистрация Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('Service Worker успешно зарегистрирован с областью:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Регистрация Service Worker не удалась:', error);
-                    });
-            });
-        }
-    </script>
 </head>
 <body>
-    <!-- Прелоадер -->
-    <div id="preloader">
+    <!-- Add loading screen at the top of the body -->
+    <div id="loadingScreen">
         <div class="spinner"></div>
+        <p>Loading assets, please wait...</p>
     </div>
 
+    <!-- Existing loading overlay and other elements -->
+    <div id="fadeOverlay"></div>
     <div id="startButtonOverlay" style="display: none;">
         <button id="startButton" style="display: none;">
             <img src="vis/1.png" alt="Start Game" style="width: 100%; height: 100%;">
@@ -1206,11 +1096,11 @@
                     </div>
                 </div>
 
-                <!-- Новый апгрейд: Лицензия на ГОООООООООЛ ляндия -->
+                <!-- Новый апгрейд: Лицензия на ГООООООООООЛ ляндия -->
                 <div class="mine-upgrade" onclick="buyMineUpgrade('gooolLandiaLicense')">
-                    <img src="vis/goool-landia-license-icon.png" alt="Лицензия на ГОООООООООЛ ляндия">
+                    <img src="vis/goool-landia-license-icon.png" alt="Лицензия на ГООООООООООЛ ляндия">
                     <div class="upgrade-info">
-                        <span>Лицензия на ГОООООООООЛ ляндия</span>
+                        <span>Лицензия на ГООООООООООЛ ляндия</span>
                         <span class="profit">Прибыль в час: <span id="gooolLandiaLicenseProfit">180K</span></span>
                     </div>
                     <div class="upgrade-level">
@@ -1222,7 +1112,7 @@
                     </div>
                 </div>
 
-                <!-- Новый апгрейд: цензя на стра�� аниме -->
+                <!-- Новый апгрейд: цензя на страу аниме -->
                 <div class="mine-upgrade" onclick="buyMineUpgrade('animeCountryLicense')">
                     <img src="vis/anime-country-license-icon.png" alt="Лицензия на страну аниме">
                     <div class="upgrade-info">
@@ -2042,111 +1932,84 @@
             initializeProfit();
         });
 
-        // Список всех ассетов для предварительной загрузки
-        const assetsToPreload = [
-            // Изображения
-            'vis/0b103c82b7a0b82e.png',
-            'vis/circle@Фон.png',
-            'vis/1.png',
-            'vis/testtest.png',
-            'vis/aaah.webp',
-            'vis/yap1-1.webp',
-            'vis/yap2.gif',
-            'vis/britva.png',
-            'vis/ham1.png',
-            'vis/ham2.png',
-            'vis/ham3.png',
-            'vis/yap-animation.gif',
-            'vis/fan-tokens-icon.png',
-            'vis/staking-icon.png',
-            'vis/btc-pairs-icon.png',
-            'vis/eth-pairs-icon.png',
-            'vis/cmc-pairs-icon.png',
-            'vis/vbuck.png',
-            'vis/pyaterochka-icon.png',
-            'vis/perekrestok-icon.png',
-            'vis/diksi-icon.png',
-            'vis/fixprice-icon.png',
-            'vis/investment-shit-icon.png',
-            'vis/europe-license-icon.png',
-            'vis/africa-license-icon.png',
-            'vis/usa-license-icon.png',
-            'vis/goool-landia-license-icon.png',
-            'vis/anime-country-license-icon.png',
-            'vis/kon-chen-yi-license-icon.png',
-            'vis/sili-billi-license-icon.png',
-            'vis/finger.png',
-            'vis/battery.png',
-            'vis/logo-hc-50-50-1.png',
-            'game-icon.png',
-            'mine-icon.png',
-            'friends-icon.png',
-            'earn-icon.png',
-            'airdrop-icon.png',
-            'lightning-icon.png',
-            'turbo-icon.png',
-            'energy-icon.png',
-            'vis/BOOM_BOOM.gif',
-            // Аудио
-            'audio/boom.mp3',
-            'audio/yap1.mp3',
-            'audio/sbr1.mp3',
-            'audio/sbr2.mp3',
-            'audio/sbr3.mp3',
-            'audio/yap2.mp3',
-            // Добавьте пути к другим ассетам, если необходимо
-        ];
-
-        // Функция для загрузки ассетов
-        function preloadAssets(assets) {
-            const promises = assets.map(asset => {
-                return new Promise((resolve, reject) => {
-                    const extension = asset.split('.').pop().toLowerCase();
-                    let element;
-
-                    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(extension)) {
-                        element = new Image();
-                        element.src = asset;
-                    } else if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                        element = new Audio();
-                        element.src = asset;
-                    } else {
-                        // Для других типов файлов
-                        element = new Image();
-                        element.src = asset;
+        // Function to preload images
+        function preloadImages(imageUrls, callback) {
+            let loaded = 0;
+            const total = imageUrls.length;
+            imageUrls.forEach(url => {
+                const img = new Image();
+                img.src = url;
+                img.onload = img.onerror = () => {
+                    loaded++;
+                    if (loaded === total) {
+                        callback();
                     }
-
-                    element.onload = resolve;
-                    element.onerror = reject;
-                });
+                };
             });
-
-            return Promise.all(promises);
         }
 
-        // Показываем прелоадер и загружаем ассеты
-        window.addEventListener('load', () => {
-            preloadAssets(assetsToPreload)
-                .then(() => {
-                    // Скрываем прелоадер
-                    const preloader = document.getElementById('preloader');
-                    preloader.classList.add('hidden');
+        // Function to preload audios
+        function preloadAudios(audioUrls, callback) {
+            let loaded = 0;
+            const total = audioUrls.length;
+            audioUrls.forEach(url => {
+                const audio = new Audio();
+                audio.src = url;
+                audio.onloadeddata = audio.onerror = () => {
+                    loaded++;
+                    if (loaded === total) {
+                        callback();
+                    }
+                };
+            });
+        }
 
-                    // Дополнительно можно добавить задержку для плавности
-                    setTimeout(() => {
-                        preloader.style.display = 'none';
-                    }, 500);
-                })
-                .catch(error => {
-                    console.error('Ошибка при загрузке ассетов:', error);
-                    // Можно скрыть прелоадер или показать сообщение об ошибке
-                    const preloader = document.getElementById('preloader');
-                    preloader.classList.add('hidden');
-                    setTimeout(() => {
-                        preloader.style.display = 'none';
-                    }, 500);
+        // Function to preload all assets
+        function preloadAssets() {
+            const imageUrls = [
+                'vis/0b103c82b7a0b82e.png',
+                'vis/circle@Фон.png',
+                'vis/logo-hc-50-50-1.png',
+                'vis/1.png',
+                'lightning-icon.png',
+                'yap1-1.webp',
+                'yap2.gif',
+                'vis/BOOM_BOOM.gif',
+                'vis/testtest.png',
+                'vis/aaah.webp',
+                'vis/yap2.gif',
+                'vis/britva.png',
+                'vis/energy-icon.png',
+                'vis/finger.png',
+                'vis/battery.png',
+                'game-icon.png',
+                'mine-icon.png',
+                'friends-icon.png',
+                'earn-icon.png',
+                'airdrop-icon.png',
+                // Add any other image URLs used in your project
+            ];
+
+            const audioUrls = [
+                'audio/boom.mp3',
+                'audio/yap1.mp3',
+                'audio/sbr1.mp3',
+                'audio/sbr2.mp3',
+                'audio/sbr3.mp3',
+                // Add any other audio URLs used in your project
+            ];
+
+            preloadImages(imageUrls, () => {
+                preloadAudios(audioUrls, () => {
+                    // All assets loaded
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    document.getElementById('startButtonOverlay').style.display = 'flex';
                 });
-        });
+            });
+        }
+
+        // Start preloading when the window loads
+        window.addEventListener('load', preloadAssets);
     </script>
 </body>
 </html>
