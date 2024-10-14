@@ -1048,11 +1048,11 @@
                     </div>
                 </div>
 
-                <!-- Новый апгрейд: Лицензия на ГООООООООООЛ ляндия -->
+                <!-- Новый апгрейд: Лицензия на ГОООООООООЛ ляндия -->
                 <div class="mine-upgrade" onclick="buyMineUpgrade('gooolLandiaLicense')">
-                    <img src="vis/goool-landia-license-icon.png" alt="Лицензия на ГООООООООООЛ ляндия">
+                    <img src="vis/goool-landia-license-icon.png" alt="Лицензия на ГОООООООООЛ ляндия">
                     <div class="upgrade-info">
-                        <span>Лицензия на ГООООООООООЛ ляндия</span>
+                        <span>Лицензия на ГОООООООООЛ ляндия</span>
                         <span class="profit">Прибыль в час: <span id="gooolLandiaLicenseProfit">180K</span></span>
                     </div>
                     <div class="upgrade-level">
@@ -1064,7 +1064,7 @@
                     </div>
                 </div>
 
-                <!-- Новый апгрейд: ицензия на страну аниме -->
+                <!-- Новый апгрейд: ��цения на стрну аниме -->
                 <div class="mine-upgrade" onclick="buyMineUpgrade('animeCountryLicense')">
                     <img src="vis/anime-country-license-icon.png" alt="Лицензия на страну аниме">
                     <div class="upgrade-info">
@@ -1274,9 +1274,6 @@
             energyDisplayElement.textContent = energy;
             document.getElementById('boostRocketCoins').textContent = formatNumber(Math.floor(coins));
             document.getElementById('maxEnergyDisplay').textContent = maxEnergy;
-            
-            // Сохраняем игру после обновления отображения
-            saveGame();
         }
 
         // Update the Yarik click handler
@@ -1327,10 +1324,8 @@
 
         // New function to play audio
         function playLevelUpSound() {
-            const audio = new Audio('./audio/boom.mp3');
-            audio.play().catch(error => {
-                console.error('Ошибка воспроизведения аудио:', error);
-            });
+            const audio = new Audio('audio/boom.mp3');
+            audio.play();
         }
 
         // Modify the checkAndUpdateLevel function
@@ -1679,14 +1674,14 @@
                 overlay.style.display = 'none';
                 
                 const yapGif = document.createElement('img');
-                yapGif.src = './audio/yap1.mp3';
+                yapGif.src = 'vis/yap1-1.webp?' + new Date().getTime();
                 yapGif.alt = 'Yap Animation';
                 yapGif.classList.add('yap-animation', 'fade-in');
                 
                 const yapAnimationContainer = document.getElementById('yapAnimationContainer');
                 yapAnimationContainer.appendChild(yapGif);
                 
-                yapAudio = new Audio('./audio/yap1.mp3');
+                yapAudio = new Audio('./audio/yap1.mp3'); // Изменено на относительный путь
                 yapAudio.play().catch(error => {
                     console.error('Ошибка воспроизведения аудио:', error);
                 });
@@ -1884,54 +1879,12 @@
             initializeProfit();
         });
 
-        // Добавьте функции для сохранения и загрузки игры
-        function saveGame() {
-            const gameState = {
-                coins,
-                tapProfit,
-                hourlyProfit,
-                energy,
-                maxEnergy,
-                level,
-                coinsForUpgrade,
-                mineUpgrades,
-                multitapLevel,
-                energyLimitLevel
-                // Добавьте другие необходимые переменные
-            };
-            localStorage.setItem('yarikGameState', JSON.stringify(gameState));
-        }
-
-        function loadGame() {
-            const savedState = localStorage.getItem('yarikGameState');
-            if (savedState) {
-                const gameState = JSON.parse(savedState);
-                coins = gameState.coins;
-                tapProfit = gameState.tapProfit;
-                hourlyProfit = gameState.hourlyProfit;
-                energy = gameState.energy;
-                maxEnergy = gameState.maxEnergy;
-                level = gameState.level;
-                coinsForUpgrade = gameState.coinsForUpgrade;
-                mineUpgrades = gameState.mineUpgrades;
-                multitapLevel = gameState.multitapLevel;
-                energyLimitLevel = gameState.energyLimitLevel;
-                // Загрузите другие необходимые переменные
-                initializeMineUpgrades();
-                updateHourlyProfit();
-                updateDisplay();
-            }
-        }
-
-        // Вызовите loadGame при загрузке страницы
+        // Вместо этого, просто вызовите fadeInContent и fadeInEffect при загрузке
         window.addEventListener('load', () => {
-            loadGame();
             fadeInContent();
             fadeInEffect();
         });
 
-        // Добавьте периодическое сохранение (например, каждые 5 секунд)
-        setInterval(saveGame, 5000);
     </script>
 </body>
 </html>
