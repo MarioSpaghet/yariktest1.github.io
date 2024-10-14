@@ -1064,7 +1064,7 @@
                     </div>
                 </div>
 
-                <!-- Новый апгрейд: ��ения на стрну аниме -->
+                <!-- Новый апгрейд: ицен��ия на стр��ну аниме -->
                 <div class="mine-upgrade" onclick="buyMineUpgrade('animeCountryLicense')">
                     <img src="vis/anime-country-license-icon.png" alt="Лицензия на страну аниме">
                     <div class="upgrade-info">
@@ -1662,11 +1662,7 @@
         let sbrAudio2;
         let sbrAudio3;
 
-        let audioPlayed = false; // Добавляем флаг для отслеживания воспроизведения аудио
-
         function fadeInEffect() {
-            if (audioPlayed) return; // Если аудио уже воспроизводилось, выходим из функции
-            
             const overlay = document.getElementById('fadeOverlay');
             overlay.style.opacity = '1';
             
@@ -1685,14 +1681,10 @@
                 const yapAnimationContainer = document.getElementById('yapAnimationContainer');
                 yapAnimationContainer.appendChild(yapGif);
                 
-                if (!audioPlayed) {
-                    yapAudio = new Audio('./audio/yap1.mp3');
-                    yapAudio.play().then(() => {
-                        audioPlayed = true; // Устанавливаем флаг после успешного воспроизведения
-                    }).catch(error => {
-                        console.error('Ошибка воспроизведения аудио:', error);
-                    });
-                }
+                yapAudio = new Audio('audio/yap1.mp3');
+                yapAudio.play().catch(error => {
+                    console.error('Ошибка воспроизведения аудио:', error);
+                });
 
                 setTimeout(() => {
                     if (yapAnimationContainer.contains(yapGif)) {
@@ -1760,10 +1752,7 @@
             });
         }
 
-        window.addEventListener('load', () => {
-            fadeInContent();
-            fadeInEffect(); // Вызываем fadeInEffect только один раз при загрузке страницы
-        });
+        window.addEventListener('load', fadeInEffect);
 
         function showStartButton() {
             const overlay = document.getElementById('startButtonOverlay');
