@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamster Yarik</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            opacity: 1; /* Changed from 0 to 1 */
+            transition: none; /* Removed transition */
+        }
+        .game-container {
+            text-align: center;
+            background-color: #1a1a2e;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            max-width: 400px; /* Limit the width for better layout */
+            margin: 0 auto; /* Center the container */
+        }
+        #yarik {
+            width: 350px; /* Keep the overall size at 350px */
+            height: 350px; /* Keep the overall size at 350px */
+            border-radius: 50%;
+            background-image: url('vis/0b103c82b7a0b82e.png'), url('circle@Фон.png');
+            background-size: 35% auto, cover; /* Yarik at 70% of container, circle covers fully */
+            background-position: center;
+            background-repeat: no-repeat, no-repeat;
+            margin: 40px auto; /* Keep original margin */
+            cursor: pointer;
+            position: relative;
+            overflow: visible;
+            transition: transform 0.1s ease, filter 0.1s ease;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px; /* Increased margin */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+        .stat {
+            background-color: #2C2C4F; /* Changed from #16213e to #2C2C4F */
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px; /* Add some margin between stats */
+            flex: 1; /* Allow stats to grow and shrink */
+            min-width: 100px; /* Ensure a minimum width */
+        }
+        #boost {
+            background-color: #4a4a4a;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .bottom-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #2C2C4F;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #2a2a2a;
+            z-index: 1001; /* Increase this value to ensure it's above the menu content */
+        }
+        .menu-item {
+            color: #FFD700;
+            text-decoration: none;
+            text-align: center;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 18px;
+            width: 20%; /* Increased from 16% to 20% */
+            max-width: 80px; /* Increased from 70px to 80px */
+        }
+        .menu-item img {
+            width: 40px;
+            height: 40px;
+            filter: brightness(0) saturate(100%) invert(79%) sepia(53%) saturate(1095%) hue-rotate(359deg) brightness(105%) contrast(104%);
+        }
+        .menu-item.active, .menu-item:hover {
+            transform: scale(1.05);
+            background-color: #0d0d1a;
+            width: 22%; /* Slightly wider when active or hovered */
+            max-width: 90px; /* Increased max-width when active or hovered */
+        }
+        .menu-item::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 0;
+            height: 3px;
+            background-color: #FFD700;
+            transition: all 0.3s ease;
+        }
+        .menu-item.active::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 80%;
+        }
+        .menu-item:hover {
+            color: #FFA500;
+        }
+        .menu-item:hover img {
+            filter: brightness(0) saturate(100%) invert(65%) sepia(54%) saturate(4948%) hue-rotate(360deg) brightness(103%) contrast(104%);
+        }
+
+        /* Main Currency Display */
+        .currency-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .currency-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .currency-amount {
+            font-size: 32px;
+            color: #FFD700; /* Changed from #e94560 to #FFD700 (yellow) */
+        }
+
+        /* Player Status */
+        .player-status {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            width: 80%;
+            height: 10px;
+            background: #3a3a3a;
+            border-radius: 5px;
+            margin: 5px auto;
+            overflow: hidden;
+        }
+        .progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #FFD700, #FFFFFF);
+            transition: width 0.3s ease-in-out;
+        }
+        .player-level {
+            font-size: 14px;
+            color: #fff;
+        }
+
+        /* Progress Bar */
+        .energy-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0; /* Increased margin */
+            padding: 10px;
+            background-color: #2C2C4F; /* Changed from #16213e to #2C2C4F */
+            border-radius: 10px;
+        }
+        .lightning-icon {
+            width: 24px;
+            height: 24px;
+        }
+        .energy-display {
+            flex: 1;
+            text-align: center;
+            color: #fff;
+        }
+        .boost-button {
+            background-color: #4a0e4e;
+            border: none;
+            color: white;
+            padding: 12px 24px; /* Increased padding */
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px; /* Increased font size */
+            transition: background-color 0.3s ease;
+        }
+
+        .boost-button:hover {
+            background-color: #6a1e6e; /* Lighter color on hover */
+        }
+
+        /* Bottom Navigation */
+        .bottom-menu {
+            background-color: #2C2C4F; /* Changed from #16213e to #2C2C4F */
+            /* Highlight active menu item in green */
+        }
+        .menu-item.active img {
+            filter: hue-rotate(0deg); /* Change highlight to yellow */
+        }
+
+        /* Overall Design Enhancements */
+        body {
+            background-color: #121212; /* Darker background */
+        }
+        .game-container, .menu-content {
+            background-color: #1a1a2e; /* Darker background with a hint of purple */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+        /* Add gradient effects where necessary */
+
+        /* Floating Number Animation */
+        .floating-number {
+            position: absolute;
+            font-size: 28px; /* Increased from 20px to 28px */
+            color: #FFD700; /* Changed from #e94560 to #FFD700 (yellow) */
+            pointer-events: none;
+            animation: floatUp 0.8s ease-out; /* Changed from 0.5s to 0.8s */
+            opacity: 0;
+            user-select: none; /* Add this line */
+            -webkit-user-select: none; /* For Safari */
+            -moz-user-select: none; /* For Firefox */
+            -ms-user-select: none; /* For IE10+/Edge */
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-150px); /* Increased from -100px to -150px */
+                opacity: 0;
+            }
+        }
+
+        /* Make sure the hamster is relatively positioned */
+        #yarik {
+            position: relative;
+            overflow: visible;
+        }
+
+        /* Change stat numbers to yellow */
+        .stat div:last-child {
+            color: #FFD700; /* Add this line to make stat numbers yellow */
+        }
+
+        #yarik:active {
+            filter: brightness(1.1); /* Умншить яркость хомяка при удерживании */
+            transform: scale(0.95); /* Добавить эффект нажатия */
+        }
+
+        /* Add this new style for the menu item text */
+        .menu-item span {
+            font-size: 13px; /* Increased from 12px to 13px */
+            margin-top: 2px; /* Increased from 1px to 2px */
+        }
+
+        /* Update these styles for the level-up animation */
+        #levelUpAnimation {
+            position: absolute;
+            top: 50%;
+            left: 45%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            display: none;
+            width: 600px; /* Increased from 400px to 600px */
+        }
+
+        #levelUpAnimation img {
+            width: 100%;
+            height: auto;
+        }
+
+        .menu-content {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: calc(100% - 60px); /* Adjust based on your bottom menu height */
+            background-color: #0d0d1a; /* Darker background */
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .menu-content h2 {
+            font-size: 36px; /* Larger title */
+            color: #FFD700; /* Gold color for title */
+            margin-bottom: 20px;
+        }
+
+        .menu-content p {
+            font-size: 24px; /* Larger text */
+            color: #ffffff; /* White text for better contrast */
+            max-width: 80%; /* Limit text width for better readability */
+        }
+
+        .menu-content.active {
+            transform: translateY(0);
+        }
+
+        #gameContainer {
+            transition: transform 0.3s ease-out;
+        }
+
+        #gameContainer.hidden {
+            transform: translateY(100%);
+        }
+
+        /* Add these new styles for the fade-in effect */
+        body {
+            opacity: 1; /* Changed from 0 to 1 */
+            transition: none; /* Removed transition */
+        }
+
+        /* Remove this class entirely */
+        /* body.fade-in {
+            opacity: 1;
+        } */
+
+        /* Boost Rocket Menu Styles */
+        #boostRocketMenu {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .boost-rocket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .boost-rocket-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .boost-rocket-coins {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .coin-icon {
+            width: 50px; /* Adjusted to match the image dimensions */
+            height: 50px; /* Adjusted to match the image dimensions */
+            margin-right: 10px;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .boost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .boost-info {
+            display: flex;
+            align-items: center;
+            width: 70%;
+            position: relative; /* Add this */
+            padding-left: 50px; /* Add this to make space for the larger icon */
+        }
+
+        .boost-icon {
+            width: 40px; /* Increase from 30px to 40px */
+            height: 40px; /* Increase from 30px to 40px */
+            position: absolute; /* Add this */
+            left: 0; /* Add this */
+            top: 50%; /* Add this */
+            transform: translateY(-50%); /* Add this to vertically center the icon */
+        }
+
+        .boost-time {
+            color: #888;
+        }
+
+        .upgradeable {
+            cursor: pointer;
+        }
+
+        .boost-cost {
+            display: flex;
+            align-items: center;
+        }
+
+        .coin-icon-small {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+        /* Ensure the menu takes up the full screen */
+        .menu-content {
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* Add this to your existing styles */
+        .upgrade-level {
+            font-size: 14px; /* Increased from 12px */
+            font-family: 'Arial', sans-serif; /* Changed font */
+            color: #FFD700;
+            margin-left: 5px; /* Reduced from 10px to move it left */
+            font-weight: bold; /* Added to make it stand out more */
+        }
+
+        /* Add this new style for the upgrade name and level container */
+        .upgrade-name-level {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        /* Update the upgrade-level style */
+        .upgrade-level {
+            font-size: 14px;
+            font-family: 'Arial', sans-serif;
+            color: #FFD700;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        /* Update the bottom-menu style */
+        .bottom-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #2C2C4F;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #2a2a2a;
+            z-index: 1001; /* Increase this value to ensure it's above the menu content */
+        }
+
+        /* Update the menu-content style */
+        .menu-content {
+            height: calc(100% - 60px); /* Adjust based on your bottom menu height */
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            padding-bottom: 60px; /* Add padding at the bottom to prevent content from being hidden behind the menu */
+        }
+
+        /* Add this new style for the game container */
+        #gameContainer {
+            padding-bottom: 60px; /* Add padding at the bottom to prevent content from being hidden behind the menu */
+        }
+
+        /* Add these styles to your existing <style> section */
+        .mine-upgrades {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .mine-upgrade {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .mine-upgrade:hover {
+            background-color: #3a3a3a;
+        }
+
+        .mine-upgrade img {
+            width: 80px;  /* Увеличено с 50px до 80px */
+            height: 80px; /* Увеличено с 50px до 80px */
+            margin-bottom: 10px;
+        }
+
+        .upgrade-info {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .upgrade-info span {
+            display: block;
+        }
+
+        .profit {
+            font-size: 12px;
+            color: #FFD700;
+        }
+
+        .upgrade-level {
+            font-size: 14px;
+            color: #FFD700;
+            margin-bottom: 5px;
+        }
+
+        .upgrade-cost {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .coin-icon-small {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+        }
+
+        #fadeOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 1;
+            z-index: 9999;
+            pointer-events: none;
+            transition: opacity 5s ease; /* Изменено с 3s на 5s */
+        }
+
+        /* Стиль для отображения GIF рядом с Yarik */
+        .yap-animation {
+            position: absolute;
+            width: 200px; /* Увеличенный размер для соответствия оригиналу */
+            height: auto; /* Сохранение пропорций */
+            top: 50%;
+            left: 110%; /* Изменено с 100% на 110% для дальнейшего перемещения GIF вправо */
+            transform: translate(0, -50%); /* Сохранено вертикальное центрирование */
+            pointer-events: none; /* Чтобы GIF не блокировал клики */
+            z-index: 100; /* Убедитесь, что GIF отображается поверх других элементов */
+        }
+
+        /* Анимация плавного исчезновения GIF */
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .fade-out {
+            animation: fadeOut 1s forwards;
+        }
+
+        /* Добавьте анимацию fade-in */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s forwards; /* Плавное появление за 1 секунду */
+        }
+
+        #startButtonOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent; /* Убираем затемнение */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        #startButton {
+            width: 200px;
+            height: 200px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+            opacity: 0;
+            animation: buttonAppear 0.5s ease-out forwards;
+            position: relative; /* Добавлено */
+        }
+
+        #startButton:hover {
+            transform: scale(1.1);
+        }
+
+        .button-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+
+        /* Добавьте новый стиль для неактивных элементов */
+        .inactive {
+            filter: grayscale(100%) brightness(70%);
+            pointer-events: none;
+        }
+
+        /* Обновленный стиль для контейнера анимации */
+        #yapAnimationContainer {
+            position: absolute;
+            top: 55%;
+            left: 65%; /* Изменено с 55% на 65% для перемещения еще правее */
+            transform: translate(0, -50%);
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .yap-animation {
+            width: 200px;
+            height: auto;
+        }
+
+        @keyframes buttonAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #shaverContainer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        #shaver {
+            position: absolute;
+            width: 500px;
+            height: 200px;
+            background-image: url('vis/britva.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            bottom: -600px;
+            left: 55%;
+            transform: translateX(-50%) rotate(-90deg);
+            animation: shave 4s linear forwards, vibrate 0.1s linear infinite; /* Увеличено с 2.5s до 4s */
+            z-index: 2;
+        }
+
+        @keyframes shave {
+            0% { bottom: -600px; }
+            20% { bottom: -200px; }
+            80% { bottom: 120%; }
+            100% { bottom: 140%; }
+        }
+
+        @keyframes vibrate {
+            0% { transform: translateX(-50%) rotate(-90deg); }
+            25% { transform: translateX(-50%) rotate(-89deg); }
+            50% { transform: translateX(-50%) rotate(-90deg); }
+            75% { transform: translateX(-50%) rotate(-91deg); }
+            100% { transform: translateX(-50%) rotate(-90deg); }
+        }
+
+        #newImage {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('vis/ham1.png'), url('circle@Фон.png');
+            background-size: 35% auto, cover;
+            background-position: center;
+            background-repeat: no-repeat, no-repeat;
+            bottom: 0;
+            left: 0;
+            clip-path: inset(100% 0 0 0);
+            transition: clip-path 3.5s linear; /* Увеличено с 2s до 3.5s */
+        }
+
+        .menu-content {
+            height: calc(100% - 60px);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            padding-bottom: 60px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mine-upgrades-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .mine-upgrades {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        /* Добавьте отступ сверху для первых двух апгрейдов */
+        .mine-upgrades .mine-upgrade:nth-child(-n+2) {
+            margin-top: 15px;
+        }
+
+        /* Добавьте отступ снизу для последних двух апгрейдов */
+        .mine-upgrades .mine-upgrade:nth-last-child(-n+2) {
+            margin-bottom: 15px;
+        }
+
+        .mine-upgrade.inactive {
+            filter: grayscale(100%);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Добавлены стили для эффекта плавного изменения заднего фона при достижении уровня 'Kazah' */
+        .kazah-background::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('vis/kazahland.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 2s ease-in-out, filter 2s ease-in-out;
+            filter: blur(5px);
+            z-index: -1;
+        }
+
+        .kazah-background.visible::after {
+            opacity: 1;
+            filter: blur(0);
+        }
+
+        @keyframes flyAway {
+            0% {
+                right: -200px;
+            }
+            100% {
+                right: 100%;
+            }
+        }
+
+        #fadeToBlack {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0;
+            z-index: 9999;
+            pointer-events: none;
+            transition: opacity 3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Добавьте этот элемент сразу после открывающего тега <body> -->
+    <div id="fadeOverlay"></div>
+
+    <div id="startButtonOverlay" style="display: none;">
+        <button id="startButton" style="display: none;">
+            <img src="vis/1.png" alt="Start Game" style="width: 100%; height: 100%;">
+            <span class="button-text">СБРИТЬ ЯРИКА</span>
+        </button>
+    </div>
+
+    <div id="clickerGameContainer" class="game-container">
+        <!-- Top Section -->
+        <div class="stats">
+            <div class="stat">
+                <div>Прибыль за тап</div>
+                <div id="tapProfit">+1</div>
+            </div>
+            <div class="stat">
+                <div>Монет для апа</div>
+                <div id="coinsForUpgrade">100</div>
+            </div>
+            <div class="stat">
+                <div>Прбыль в час</div>
+                <div id="hourlyProfit">0</div>
+            </div>
+        </div>
+
+        <!-- Main Currency Display -->
+        <div class="currency-display">
+            <img src="vis/logo-hc-50-50-1.png" alt="Yarik Coin" class="currency-icon">
+            <span id="currencyAmount" class="currency-amount">0</span>
+        </div>
+
+        <!-- Player Status -->
+        <div class="player-status">
+            <span id="playerRank">Bronze &gt;</span>
+            <div class="progress-bar">
+                <div id="progressBar" class="progress"></div>
+            </div>
+            <span id="playerLevel" class="player-level">Level 1/9</span>
+        </div>
+
+        <!-- Add this new div for the level-up animation -->
+        <div id="levelUpAnimation">
+            <img src="" alt="Level Up">
+        </div>
+
+        <!-- Central Circular Element (Yarik) -->
+        <div id="yarik"></div>
+        <div id="yapAnimationContainer"></div>
+
+        <!-- Energy Bar -->
+        <div class="energy-bar">
+            <img src="lightning-icon.png" alt="Lightning" class="lightning-icon">
+            <span class="energy-display"><span id="energyDisplay">1000</span> / <span id="maxEnergyDisplay">1000</span></span>
+            <button id="boost" class="boost-button">
+                Boost Rocket
+            </button>
+        </div>
+
+    </div>
+
+    <div id="friendsMenu" class="menu-content">
+        <h2>Друзья</h2>
+        <p>у тебя нет друзей, гузок:)</p>
+    </div>
+
+    <div id="mineMenu" class="menu-content">
+        <h2>Mine</h2>
+        <div class="mine-upgrades-container">
+            <div class="mine-upgrades">
+                <div class="mine-upgrade" onclick="buyMineUpgrade('fanTokens')">
+                    <img src="fan-tokens-icon.png" alt="Fan Tokens">
+                    <div class="upgrade-info">
+                        <span>Fan tokens</span>
+                        <span class="profit">Прибыль в час: <span id="fanTokensProfit">14,99K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="fanTokensLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="fanTokensCost">428,13K</span>
+                    </div>
+                </div>
+                <div class="mine-upgrade" onclick="buyMineUpgrade('staking')">
+                    <img src="staking-icon.png" alt="Staking">
+                    <div class="upgrade-info">
+                        <span>Staking</span>
+                        <span class="profit">Прибыль в час: <span id="stakingProfit">9,46K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="stakingLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="stakingCost">149,84K</span>
+                    </div>
+                </div>
+                <div class="mine-upgrade" onclick="buyMineUpgrade('btcPairs')">
+                    <img src="btc-pairs-icon.png" alt="BTC pairs">
+                    <div class="upgrade-info">
+                        <span>BTC pairs</span>
+                        <span class="profit">Прибыль в час: <span id="btcPairsProfit">632</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="btcPairsLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="btcPairsCost">10,7K</span>
+                    </div>
+                </div>
+                <div class="mine-upgrade" onclick="buyMineUpgrade('ethPairs')">
+                    <img src="eth-pairs-icon.png" alt="ETH pairs">
+                    <div class="upgrade-info">
+                        <span>ETH pairs</span>
+                        <span class="profit">Прибыль в час: <span id="ethPairsProfit">632</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="ethPairsLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="ethPairsCost">12,84K</span>
+                    </div>
+                </div>
+                <div class="mine-upgrade" onclick="buyMineUpgrade('cmcPairs')">
+                    <img src="cmc-pairs-icon.png" alt="Top 10 cmc pairs">
+                    <div class="upgrade-info">
+                        <span>Top 10 cmc pairs</span>
+                        <span class="profit">Прибыль в час: <span id="cmcPairsProfit">1,26K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="cmcPairsLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="cmcPairsCost">42,81K</span>
+                    </div>
+                </div>
+                <div class="mine-upgrade" onclick="buyMineUpgrade('vBucks')">
+                    <img src="vis/vbuck.png" alt="V-Bucks">
+                    <div class="upgrade-info">
+                        <span>V-Bucks</span>
+                        <span class="profit">Прибыль в час: <span id="vBucksProfit">1,1K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="vBucksLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="vBucksCost">21,4K</span>
+                    </div>
+                </div>
+                <!-- Добавленные апгрейды -->
+                <div class="mine-upgrade" onclick="buyMineUpgrade('pyaterochka')">
+                    <img src="vis/pyaterochka-icon.png" alt="Пятерочка">
+                    <div class="upgrade-info">
+                        <span>Пятерочка</span>
+                        <span class="profit">Прибыль в час: <span id="pyaterochkaProfit">2K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="pyaterochkaLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="pyaterochkaCost">50K</span>
+                    </div>
+                </div>
+                <div class="mine-upgrade" onclick="buyMineUpgrade('perekrestok')">
+                    <img src="vis/perekrestok-icon.png" alt="Перекрёсток">
+                    <div class="upgrade-info">
+                        <span>Перекрёсток</span>
+                        <span class="profit">Прибыль в час: <span id="perekrestokProfit">3K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="perekrestokLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="perekrestokCost">75K</span>
+                    </div>
+                </div>
+                <div class="mine-upgrade" onclick="buyMineUpgrade('diksi')">
+                    <img src="vis/diksi-icon.png" alt="Дикси">
+                    <div class="upgrade-info">
+                        <span>Дикси</span>
+                        <span class="profit">Прибыль в час: <span id="diksiProfit">4K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="diksiLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="diksiCost">100K</span>
+                    </div>
+                </div>
+                <div class="mine-upgrade" onclick="buyMineUpgrade('fixprice')">
+                    <img src="vis/fixprice-icon.png" alt="FixPrice">
+                    <div class="upgrade-info">
+                        <span>FixPrice</span>
+                        <span class="profit">Прибыль в час: <span id="fixpriceProfit">5K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="fixpriceLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="fixpriceCost">125K</span>
+                    </div>
+                </div>
+                <!-- ... конец добавленных апгрейдов ... -->
+                <!-- Добавьте этот блок внутри <div class="mine-upgrades"> -->
+                <div class="mine-upgrade" onclick="buyMineUpgrade('investmentInShit')">
+                    <img src="vis/investment-shit-icon.png" alt="Инвестиция в говно">
+                    <div class="upgrade-info">
+                        <span>Инвестиция в говно</span>
+                        <span class="profit">Прибыль в час: <span id="investmentInShitProfit">100K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="investmentInShitLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="investmentInShitCost">500K</span>
+                    </div>
+                </div>
+                <!-- Новый апгрейд: Лицензия на Европу -->
+                <div class="mine-upgrade" onclick="buyMineUpgrade('europeLicense')">
+                    <img src="vis/europe-license-icon.png" alt="Лицензия на Европу">
+                    <div class="upgrade-info">
+                        <span>Лицензия на Европу</span>
+                        <span class="profit">Прибыль в час: <span id="europeLicenseProfit">120K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="europeLicenseLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="europeLicenseCost">600K</span>
+                    </div>
+                </div>
+
+                <!-- Новый апгрейд: Лицензия на Африку -->
+                <div class="mine-upgrade" onclick="buyMineUpgrade('africaLicense')">
+                    <img src="vis/africa-license-icon.png" alt="Лицензия на Африку">
+                    <div class="upgrade-info">
+                        <span>Лицензия на Африку</span>
+                        <span class="profit">Прибыль в час: <span id="africaLicenseProfit">140K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="africaLicenseLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="africaLicenseCost">700K</span>
+                    </div>
+                </div>
+
+                <!-- Новый апгрейд: Лицензия на USA -->
+                <div class="mine-upgrade" onclick="buyMineUpgrade('usaLicense')">
+                    <img src="vis/usa-license-icon.png" alt="Лицензия на USA">
+                    <div class="upgrade-info">
+                        <span>Лицензия на USA</span>
+                        <span class="profit">Прибыль в час: <span id="usaLicenseProfit">160K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="usaLicenseLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="usaLicenseCost">800K</span>
+                    </div>
+                </div>
+
+                <!-- Новый апгрейд: Лицензия на ГОООООООООЛ ляндия -->
+                <div class="mine-upgrade" onclick="buyMineUpgrade('gooolLandiaLicense')">
+                    <img src="vis/goool-landia-license-icon.png" alt="Лицензия на ГОООООООООЛ ляндия">
+                    <div class="upgrade-info">
+                        <span>Лицензия на ГОООООООООЛ ляндия</span>
+                        <span class="profit">Прибыль в час: <span id="gooolLandiaLicenseProfit">180K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="gooolLandiaLicenseLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="gooolLandiaLicenseCost">900K</span>
+                    </div>
+                </div>
+
+                <!-- Новый апгрейд: нзя на страу аниме -->
+                <div class="mine-upgrade" onclick="buyMineUpgrade('animeCountryLicense')">
+                    <img src="vis/anime-country-license-icon.png" alt="Лицензия на страну аниме">
+                    <div class="upgrade-info">
+                        <span>Лицензия на страну аниме</span>
+                        <span class="profit">Прибыль в час: <span id="animeCountryLicenseProfit">200K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="animeCountryLicenseLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="animeCountryLicenseCost">1000K</span>
+                    </div>
+                </div>
+
+                <!-- Новый апгрейд: Лицензия на Кон Чен Ый -->
+                <div class="mine-upgrade" onclick="buyMineUpgrade('konChenYiLicense')">
+                    <img src="vis/kon-chen-yi-license-icon.png" alt="Лицензия на Кон Чен Ый">
+                    <div class="upgrade-info">
+                        <span>Лицензия на Кон Чен Ый</span>
+                        <span class="profit">Прибыль в час: <span id="konChenYiLicenseProfit">220K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="konChenYiLicenseLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="konChenYiLicenseCost">1100K</span>
+                    </div>
+                </div>
+
+                <!-- Новый апгрейд: Лицензия на Сили Билли -->
+                <div class="mine-upgrade" onclick="buyMineUpgrade('siliBilliLicense')">
+                    <img src="vis/sili-billi-license-icon.png" alt="Лицензия на Сили Билли">
+                    <div class="upgrade-info">
+                        <span>Сили БиллЯрик</span>
+                        <span class="profit">Прибыль в час: <span id="siliBilliLicenseProfit">250K</span></span>
+                    </div>
+                    <div class="upgrade-level">
+                        lvl <span id="siliBilliLicenseLevel">1</span>
+                    </div>
+                    <div class="upgrade-cost">
+                        <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                        <span id="siliBilliLicenseCost">1200K</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="earnMenu" class="menu-content">
+        <h2>Earn</h2>
+        <p>Зесь пока ничего нет</p>
+    </div>
+
+    <div id="airdropMenu" class="menu-content">
+        <h2>Airdrop</h2>
+        <p>Здесь пока ничего нет</p>
+    </div>
+
+    <!-- Added Boost Rocket Menu -->
+    <div id="boostRocketMenu" class="menu-content">
+        <div class="boost-rocket-header">
+            <h2>Усилители</h2>
+            <button class="close-button" onclick="closeBoostRocketMenu()">×</button>
+        </div>
+        <div class="boost-rocket-coins">
+            <img src="vis/logo-hc-50-50-1.png" alt="Yarik Coin" class="coin-icon">
+            <span id="boostRocketCoins">0</span>
+        </div>
+        <h3>Бесплатные усилтели (каждые 5 иут)</h3>
+        <div class="boost-item">
+            <div class="boost-info">
+                <img src="energy-icon.png" alt="Energy" class="boost-icon">
+                <span>Full energy</span>
+            </div>
+            <span id="fullEnergyTimer" class="boost-time">5:00</span>
+        </div>
+        <div class="boost-item">
+            <div class="boost-info">
+                <img src="turbo-icon.png" alt="Turbo" class="boost-icon">
+                <span>Turbo</span>
+            </div>
+            <span id="turboTimer" class="boost-time">5:00</span>
+        </div>
+        <h3>Платные усилители</h3>
+        <div class="boost-item upgradeable" onclick="buyMultitap()">
+            <div class="boost-info">
+                <img src="vis/finger.png" alt="Multiдроч" class="boost-icon">
+                <div class="upgrade-name-level">
+                    <span>Multiдроч</span>
+                    <span class="upgrade-level">Lvl <span id="multitapLevel">1</span></span>
+                </div>
+            </div>
+            <div class="boost-cost">
+                <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                <span id="multitapCost">100</span>
+            </div>
+        </div>
+        <div class="boost-item upgradeable" onclick="buyEnergyLimit()">
+            <div class="boost-info">
+                <img src="vis/battery.png" alt="Energy Limit" class="boost-icon">
+                <div class="upgrade-name-level">
+                    <span>Energy limit</span>
+                    <span class="upgrade-level">Lvl <span id="energyLimitLevel">1</span></span>
+                </div>
+            </div>
+            <div class="boost-cost">
+                <img src="vis/logo-hc-50-50-1.png" alt="Coin" class="coin-icon-small">
+                <span id="energyLimitCost">200</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-menu">
+        <a class="menu-item active" onclick="showMenu('game')">
+            <img src="game-icon.png" alt="Game">
+        </a>
+        <a class="menu-item" onclick="showMenu('mine')">
+            <img src="mine-icon.png" alt="Mine">
+        </a>
+        <a class="menu-item" onclick="showMenu('friends')">
+            <img src="friends-icon.png" alt="Friends">
+        </a>
+        <a class="menu-item" onclick="showMenu('earn')">
+            <img src="earn-icon.png" alt="Earn">
+        </a>
+        <a class="menu-item" onclick="showMenu('airdrop')">
+            <img src="airdrop-icon.png" alt="Airdrop">
+        </a>
+    </div>
+
+    <script>
+        // Game variables
+        let coins = 0;
+        let tapProfit = 1;
+        let hourlyProfit = 0;
+        let energy = 1000;
+        let maxEnergy = 1000;
+
+        // DOM elements
+        const currencyAmountElement = document.getElementById('currencyAmount');
+        const tapProfitElement = document.getElementById('tapProfit');
+        const hourlyProfitElement = document.getElementById('hourlyProfit');
+        const energyDisplayElement = document.getElementById('energyDisplay');
+        const yarikElement = document.getElementById('yarik');
+        const boostButton = document.getElementById('boost');
+
+        // Update these variables
+        let level = 'Bronze';
+        let coinsForUpgrade = 5000;
+        let progressPercentage = 0;
+
+        // Add these variables for boost timers
+        let fullEnergyTimer = 0;
+        let turboTimer = 0;
+
+        // Ensure the main updateDisplay function includes all necessary updates
+        function updateDisplay() {
+            currencyAmountElement.textContent = formatNumber(Math.floor(coins));
+            tapProfitElement.textContent = `+${formatNumber(tapProfit)}`;
+            hourlyProfitElement.textContent = formatNumber(Math.floor(hourlyProfit));
+            energyDisplayElement.textContent = energy;
+            
+            // Обновляем отображение монет для апа
+            let nextUpgrade;
+            if (coins < 1000000) {
+                nextUpgrade = 1000000;
+            } else if (coins < 10000000) {
+                nextUpgrade = 10000000;
+            } else if (coins < 100000000) {
+                nextUpgrade = 100000000;
+            } else {
+                nextUpgrade = "Max";
+            }
+            document.getElementById('coinsForUpgrade').textContent = formatNumber(nextUpgrade);
+            
+            // Update progress bar based on coins and current level
+            let startCoins, endCoins;
+            switch(level) {
+                case 'Bronze':
+                    startCoins = 0;
+                    endCoins = 1000000;
+                    break;
+                case 'Master':
+                    startCoins = 1000000;
+                    endCoins = 10000000;
+                    break;
+                case 'Yarik Master':
+                    startCoins = 10000000;
+                    endCoins = 100000000;
+                    break;
+                case 'Kazah':
+                    startCoins = 100000000;
+                    endCoins = startCoins * 2; // Для Kazah уровня просто удваиваем начальное значение
+                    break;
+            }
+            
+            progressPercentage = ((coins - startCoins) / (endCoins - startCoins)) * 100;
+            if (progressPercentage > 100) progressPercentage = 100;
+            document.getElementById('progressBar').style.width = `${progressPercentage}%`;
+            
+            // Update player level
+            document.getElementById('playerLevel').textContent = `${level}`;
+            
+            // Update energy display
+            energyDisplayElement.textContent = energy;
+            document.getElementById('boostRocketCoins').textContent = formatNumber(Math.floor(coins));
+            document.getElementById('maxEnergyDisplay').textContent = maxEnergy;
+        }
+
+        // Update the Yarik click handler
+        yarikElement.addEventListener('click', (event) => {
+            if (energy > 0) {
+                coins += tapProfit;
+                energy--;
+                
+                // Create floating number (keep this part)
+                const floatingNumber = document.createElement('div');
+                floatingNumber.textContent = `+${tapProfit}`;
+                floatingNumber.classList.add('floating-number');
+                
+                // Position the floating number at click coordinates
+                const rect = yarikElement.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                floatingNumber.style.left = `${x}px`;
+                floatingNumber.style.top = `${y}px`;
+                
+                // Add floating number to Yarik element
+                yarikElement.appendChild(floatingNumber);
+                
+                // Remove floating number after animation
+                setTimeout(() => {
+                    yarikElement.removeChild(floatingNumber);
+                }, 800);
+                
+                // Trigger animation
+                yarikElement.classList.add('animate');
+                setTimeout(() => {
+                    yarikElement.classList.remove('animate');
+                }, 100);
+                
+                // Check if we've reached the upgrade threshold
+                if (coins >= coinsForUpgrade) {
+                    checkAndUpdateLevel(); // Replace updateLevel() with this
+                }
+                
+                updateDisplay();
+            }
+        });
+
+        // Boost button click handler
+        boostButton.addEventListener('click', () => {
+            showMenu('boostRocket');
+        });
+
+        // New function to play audio
+        function playLevelUpSound() {
+            const audio = new Audio('audio/boom.mp3');
+            audio.play();
+        }
+
+        // Modify the checkAndUpdateLevel function
+        function checkAndUpdateLevel() {
+            let newLevel = level;
+            if (coins >= 100000000) {
+                newLevel = 'Kazah';
+            } else if (coins >= 10000000) {
+                newLevel = 'Yarik Master';
+            } else if (coins >= 1000000) {
+                newLevel = 'Master';
+            } else {
+                newLevel = 'Bronze';
+            }
+
+            if (newLevel !== level) {
+                level = newLevel;
+                playLevelUpSound(); // Play the level-up sound
+                playLevelUpAnimation(); // Play the level-up animation
+                updateRank();
+                updateYarikImage(); // Add this line to update Yarik's image
+                // Update coinsForUpgrade based on the new level
+                switch(level) {
+                    case 'Bronze':
+                        coinsForUpgrade = 1000000;
+                        break;
+                    case 'Master':
+                        coinsForUpgrade = 10000000;
+                        break;
+                    case 'Yarik Master':
+                        coinsForUpgrade = 100000000;
+                        break;
+                    case 'Kazah':
+                        coinsForUpgrade = Infinity;
+                        updateBackgroundForKazah(); // Call the function to change the background
+                        break;
+                }
+            }
+            updateDisplay(); // Always update the display
+        }
+
+        // Update the updateRank function
+        function updateRank() {
+            const rankElement = document.getElementById('playerRank');
+            rankElement.textContent = `${level} >`;
+        }
+
+        // Format large numbers function
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(2) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(2) + 'K';
+            } else {
+                return num.toString();
+            }
+        }
+
+        // Automatic energy replenishment
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy++;
+                updateDisplay();
+            }
+        }, 1000);
+
+        // Automatic profit generation
+        // setInterval(() => {
+        //     coins += hourlyProfit / 3600;
+        //     updateDisplay();
+        // }, 1000);
+
+        // Initialize the display
+        updateDisplay();
+        updateRank();
+
+        // Function to show/hide menus with sliding animation
+        function showMenu(menuId) {
+            const gameContainer = document.getElementById('clickerGameContainer');
+            const menus = document.getElementsByClassName('menu-content');
+            const menuItems = document.getElementsByClassName('menu-item');
+            
+            // Hide all menus and game container
+            gameContainer.classList.add('hidden');
+            for (let menu of menus) {
+                menu.classList.remove('active');
+            }
+            
+            // Remove active class from all menu items
+            for (let item of menuItems) {
+                item.classList.remove('active');
+            }
+            
+            // Show selected menu or game container and set active class
+            let activeItem;
+            if (menuId === 'game') {
+                gameContainer.classList.remove('hidden');
+                activeItem = document.querySelector('.menu-item[onclick="showMenu(\'game\')"]');
+            } else {
+                const selectedMenu = document.getElementById(menuId + 'Menu');
+                selectedMenu.classList.add('active');
+                activeItem = document.querySelector(`.menu-item[onclick="showMenu('${menuId}')"]`);
+            }
+            activeItem.classList.add('active');
+        }
+
+        // Initialize the game view
+        showMenu('game');
+
+        // Add these new variables
+        const levelUpAnimation = document.getElementById('levelUpAnimation');
+        const levelUpGif = levelUpAnimation.querySelector('img');
+        let isAnimationPlaying = false;
+
+        // Update this function to play the level-up animation
+        function playLevelUpAnimation() {
+            if (isAnimationPlaying) return; // Prevent multiple animations from playing simultaneously
+            
+            isAnimationPlaying = true;
+            levelUpGif.src = 'vis/BOOM_BOOM.gif?' + new Date().getTime(); // Add timestamp to force gif reload
+            levelUpAnimation.style.display = 'block';
+            
+            // Listen for the gif to finish loading
+            levelUpGif.onload = function() {
+                // Get the duration of the gif (assuming it's 3 seconds, adjust if different)
+                const gifDuration = 3000;
+                
+                // Hide the animation after it finishes
+                setTimeout(() => {
+                    levelUpAnimation.style.display = 'none';
+                    isAnimationPlaying = false;
+                }, gifDuration);
+            };
+        }
+
+        // Add this new function at the end of your script
+        function fadeInContent() {
+            document.body.classList.add('fade-in');
+        }
+
+        // Call the fadeInContent function when the window has finished loading
+        window.addEventListener('load', fadeInContent);
+
+        function closeBoostRocketMenu() {
+            showMenu('game');
+        }
+
+        // Function to update boost timers
+        function updateBoostTimers() {
+            if (fullEnergyTimer > 0) fullEnergyTimer--;
+            if (turboTimer > 0) turboTimer--;
+
+            document.getElementById('fullEnergyTimer').textContent = fullEnergyTimer > 0 ? formatTime(fullEnergyTimer) : 'Available!';
+            document.getElementById('turboTimer').textContent = turboTimer > 0 ? formatTime(turboTimer) : 'Available!';
+
+            updateDisplay();
+        }
+
+        // Function to format time as MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Update timers every second
+        setInterval(updateBoostTimers, 1000);
+
+        let multitapLevel = 1;
+        let energyLimitLevel = 1;
+
+        function buyMultitap() {
+            const cost = Math.ceil(10 * Math.pow(2, multitapLevel - 1)); // уменьшено с 100
+            if (coins >= cost) {
+                coins -= cost;
+                multitapLevel++;
+                tapProfit *= 2;
+                updateDisplay();
+                document.getElementById('multitapCost').textContent = Math.ceil(10 * Math.pow(2, multitapLevel - 1)); // уменьшено с 100
+                document.getElementById('multitapLevel').textContent = multitapLevel;
+                checkAndUpdateLevel();
+            }
+        }
+
+        function buyEnergyLimit() {
+            const cost = Math.ceil(20 * Math.pow(2, energyLimitLevel - 1)); // уменьшено с 200
+            if (coins >= cost) {
+                coins -= cost;
+                energyLimitLevel++;
+                maxEnergy += 100;
+                energy = maxEnergy; // Заплнить энергию до нового максимума
+                updateDisplay();
+                document.getElementById('energyLimitCost').textContent = Math.ceil(20 * Math.pow(2, energyLimitLevel - 1)); // уменьшено с 200
+                document.getElementById('energyLimitLevel').textContent = energyLimitLevel;
+                checkAndUpdateLevel();
+            }
+        }
+
+        function applyFullEnergy() {
+            energy = maxEnergy;
+            fullEnergyTimer = 300; // Reset timer to 5 minutes
+            updateDisplay();
+        }
+
+        function applyTurbo() {
+            // Implement Turbo boost logic here
+            // For example, double the tap profit for 30 seconds
+            const originalTapProfit = tapProfit;
+            tapProfit *= 2;
+            setTimeout(() => {
+                tapProfit = originalTapProfit;
+                updateDisplay();
+            }, 30000); // 30 seconds
+            turboTimer = 300; // Reset timer to 5 minutes
+            updateDisplay();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.boost-item:nth-child(4)').addEventListener('click', function() {
+                if (fullEnergyTimer === 0) {
+                    applyFullEnergy();
+                }
+            });
+
+            document.querySelector('.boost-item:nth-child(5)').addEventListener('click', function() {
+                if (turboTimer === 0) {
+                    applyTurbo();
+                }
+            });
+        });
+
+        // Add these variables to your existing variables
+        const mineUpgrades = {
+            fanTokens: { level: 0, cost: 100, profit: 0, maxLevel: 6, baseProfit: 1000 },
+            staking: { level: 0, cost: 500, profit: 0, maxLevel: 6, baseProfit: 5000 },
+            btcPairs: { level: 0, cost: 1000, profit: 0, maxLevel: 6, baseProfit: 10000 },
+            ethPairs: { level: 0, cost: 5000, profit: 0, maxLevel: 6, baseProfit: 50000 },
+            cmcPairs: { level: 0, cost: 10000, profit: 0, maxLevel: 6, baseProfit: 100000 },
+            vBucks: { level: 0, cost: 50000, profit: 0, maxLevel: 6, baseProfit: 500000 },
+            pyaterochka: { level: 0, cost: 100000, profit: 0, maxLevel: 6, baseProfit: 1000000 },
+            perekrestok: { level: 0, cost: 500000, profit: 0, maxLevel: 6, baseProfit: 5000000 },
+            diksi: { level: 0, cost: 1000000, profit: 0, maxLevel: 6, baseProfit: 10000000 },
+            fixprice: { level: 0, cost: 5000000, profit: 0, maxLevel: 6, baseProfit: 50000000 },
+            investmentInShit: { level: 0, cost: 10000000, profit: 0, maxLevel: 6, baseProfit: 100000000 },
+            europeLicense: { level: 0, cost: 50000000, profit: 0, maxLevel: 6, baseProfit: 500000000 },
+            africaLicense: { level: 0, cost: 100000000, profit: 0, maxLevel: 6, baseProfit: 1000000000 },
+            usaLicense: { level: 0, cost: 500000000, profit: 0, maxLevel: 6, baseProfit: 5000000000 },
+            gooolLandiaLicense: { level: 0, cost: 1000000000, profit: 0, maxLevel: 6, baseProfit: 10000000000 },
+            animeCountryLicense: { level: 0, cost: 5000000000, profit: 0, maxLevel: 6, baseProfit: 50000000000 },
+            konChenYiLicense: { level: 0, cost: 10000000000, profit: 0, maxLevel: 6, baseProfit: 100000000000 },
+            siliBilliLicense: { level: 0, cost: 50000000000, profit: 0, maxLevel: 6, baseProfit: 500000000000 },
+        };
+
+        // Add this function to handle mine upgrades
+        function buyMineUpgrade(upgradeType) {
+            const upgrade = mineUpgrades[upgradeType];
+            if (upgrade.level < upgrade.maxLevel && coins >= upgrade.cost) {
+                coins -= upgrade.cost;
+                upgrade.level++;
+                upgrade.cost = Math.ceil(upgrade.cost * 3); // Увеличиваем стоимость в 3 раза
+                upgrade.profit = upgrade.baseProfit * Math.pow(2, upgrade.level - 1); // Удваиваем прибыль с каждым уровнем
+                updateMineUpgradeDisplay(upgradeType);
+                updateHourlyProfit();
+                adjustAutoClickSpeed();
+                updateDisplay();
+                checkAndUpdateLevel();
+                
+                if (upgrade.level >= upgrade.maxLevel) {
+                    const upgradeElement = document.querySelector(`.mine-upgrade[onclick="buyMineUpgrade('${upgradeType}')"]`);
+                    upgradeElement.classList.add('inactive');
+                    upgradeElement.onclick = null;
+                }
+            }
+        }
+
+        // Add this function to update the display of mine upgrades
+        function updateMineUpgradeDisplay(upgradeType) {
+            const upgrade = mineUpgrades[upgradeType];
+            const upgradeElement = document.querySelector(`.mine-upgrade[onclick="buyMineUpgrade('${upgradeType}')"]`);
+            
+            document.getElementById(`${upgradeType}Level`).textContent = upgrade.level;
+            document.getElementById(`${upgradeType}Cost`).textContent = formatNumber(upgrade.cost);
+            document.getElementById(`${upgradeType}Profit`).textContent = formatNumber(upgrade.profit);
+            
+            if (upgrade.level >= upgrade.maxLevel) {
+                upgradeElement.classList.add('inactive');
+                upgradeElement.onclick = null;
+            } else {
+                upgradeElement.classList.remove('inactive');
+            }
+        }
+
+        // Modify the updateHourlyProfit function to include mine upgrades
+        function updateHourlyProfit() {
+            hourlyProfit = Object.values(mineUpgrades).reduce((total, upgrade) => {
+                return upgrade.level > 0 ? total + upgrade.profit : total;
+            }, 0);
+            updateDisplay();
+        }
+
+        // Call this function to initialize the mine upgrade displays
+        function initializeMineUpgrades() {
+            for (const upgradeType in mineUpgrades) {
+                updateMineUpgradeDisplay(upgradeType);
+                if (mineUpgrades[upgradeType].level >= mineUpgrades[upgradeType].maxLevel) {
+                    const upgradeElement = document.querySelector(`.mine-upgrade[onclick="buyMineUpgrade('${upgradeType}')"]`);
+                    upgradeElement.classList.add('inactive');
+                    upgradeElement.onclick = null;
+                }
+            }
+            updateHourlyProfit();
+        }
+
+        // Call initializeMineUpgrades after the DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeMineUpgrades);
+
+        // Добавьте эту функцию для автоматическго начисления прыли
+        function autoGenerateProfit() {
+            let totalProfit = 0;
+            for (const upgradeType in mineUpgrades) {
+                if (mineUpgrades[upgradeType].level > 0) {
+                    totalProfit += mineUpgrades[upgradeType].profit;
+                }
+            }
+            coins += totalProfit / 3600;
+            checkAndUpdateLevel();
+            updateDisplay();
+        }
+
+        // Вызывайте функцию autoGenerateProfit каждую секунду
+        setInterval(autoGenerateProfit, 1000);
+
+        let yapAudio;
+        let sbrAudio1;
+        let sbrAudio2;
+        let sbrAudio3;
+
+        function fadeInEffect() {
+            const overlay = document.getElementById('fadeOverlay');
+            overlay.style.opacity = '1';
+            
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+            }, 100);
+
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                
+                const yapGif = document.createElement('img');
+                yapGif.src = 'vis/yap1-1.webp?' + new Date().getTime();
+                yapGif.alt = 'Yap Animation';
+                yapGif.classList.add('yap-animation', 'fade-in');
+                
+                const yapAnimationContainer = document.getElementById('yapAnimationContainer');
+                yapAnimationContainer.appendChild(yapGif);
+                
+                if (yapAudio && !yapAudio.paused) {
+                    yapAudio.pause();
+                    yapAudio.currentTime = 0;
+                }
+
+                yapAudio = new Audio('audio/yap1.mp3');
+                yapAudio.play().catch(error => {
+                    console.error('Ошибка воспроизведения аудио:', error);
+                });
+
+                setTimeout(() => {
+                    if (yapAnimationContainer.contains(yapGif)) {
+                        replaceYapAnimation();
+                    }
+                }, 36000);
+
+            }, 5100);
+        }
+
+        function replaceYapAnimation() {
+            const yapAnimationContainer = document.getElementById('yapAnimationContainer');
+            const oldYapGif = yapAnimationContainer.querySelector('.yap-animation');
+            if (oldYapGif) {
+                const yap2Gif = document.createElement('img');
+                yap2Gif.src = 'vis/yap2.gif?' + new Date().getTime();
+                yap2Gif.alt = 'Yap Animation 2';
+                yap2Gif.classList.add('yap-animation');
+                yapAnimationContainer.replaceChild(yap2Gif, oldYapGif);
+            }
+        }
+
+        function startGame() {
+            const overlay = document.getElementById('startButtonOverlay');
+            overlay.style.display = 'none';
+            
+            document.getElementById('yarik').classList.remove('inactive');
+            document.querySelectorAll('.menu-item, #boost').forEach(item => {
+                item.classList.remove('inactive');
+            });
+
+            replaceYapAnimation();
+
+            if (yapAudio) {
+                yapAudio.pause();
+                yapAudio.currentTime = 0;
+            }
+
+            const yarikElement = document.getElementById('yarik');
+
+            function playAudioWithCallback(audioSrc, callback) {
+                const audio = new Audio(audioSrc);
+                audio.onended = callback;
+                audio.play().catch(error => {
+                    console.error('Ошибка воспроизведеия аудио:', error);
+                    callback();
+                });
+                return audio;
+            }
+
+            sbrAudio1 = playAudioWithCallback('audio/sbr1.mp3', () => {
+                yarikElement.style.backgroundImage = "url('vis/testtest.png'), url('circle@Фон.png')";
+
+                sbrAudio2 = playAudioWithCallback('audio/sbr2.mp3', () => {
+                    const aaahGif = new Image();
+                    aaahGif.onload = () => {
+                        yarikElement.style.backgroundImage = `url('${aaahGif.src}'), url('circle@Фон.png')`;
+                        startShaving();
+                        
+                        sbrAudio3 = playAudioWithCallback('audio/sbr3.mp3', () => {
+                        });
+                    };
+                    aaahGif.src = 'vis/aaah.webp?' + new Date().getTime();
+                });
+            });
+        }
+
+        window.addEventListener('load', fadeInEffect);
+
+        function showStartButton() {
+            const overlay = document.getElementById('startButtonOverlay');
+            const button = document.getElementById('startButton');
+            overlay.style.display = 'flex';
+            button.style.display = 'block';
+            button.style.animation = 'none';
+            button.offsetHeight;
+            button.style.animation = null;
+        }
+
+        document.getElementById('yarik').classList.add('inactive');
+        document.querySelectorAll('.menu-item, #boost').forEach(item => {
+            item.classList.add('inactive');
+        });
+
+        setTimeout(showStartButton, 17000);
+
+        document.getElementById('startButton').addEventListener('click', startGame);
+
+        function startShaving() {
+            const yarikElement = document.getElementById('yarik');
+            const shaverContainer = document.createElement('div');
+            shaverContainer.id = 'shaverContainer';
+            
+            const shaver = document.createElement('div');
+            shaver.id = 'shaver';
+            
+            const newImage = document.createElement('div');
+            newImage.id = 'newImage';
+            
+            shaverContainer.appendChild(newImage);
+            shaverContainer.appendChild(shaver);
+            yarikElement.appendChild(shaverContainer);
+
+            setTimeout(() => {
+                newImage.style.clipPath = 'inset(0 0 0 0)';
+            }, 100);
+
+            setTimeout(() => {
+                updateYarikImage();
+                yarikElement.removeChild(shaverContainer);
+                
+                setTimeout(playYap2AndReplaceGif, 3000);
+            }, 4100);
+        }
+
+        function playYap2AndReplaceGif() {
+            const yapAnimationContainer = document.getElementById('yapAnimationContainer');
+            const yap2Audio = new Audio('audio/yap2.mp3');
+            
+            yap2Audio.play().catch(error => {
+                console.error('Ошибка воспроизведения аудио:', error);
+            });
+            
+            const yap1Gif = document.createElement('img');
+            yap1Gif.src = 'vis/yap1-1.webp?' + new Date().getTime();
+            yap1Gif.alt = 'Yap Animation 1';
+            yap1Gif.classList.add('yap-animation');
+            
+            const oldYapGif = yapAnimationContainer.querySelector('.yap-animation');
+            if (oldYapGif) {
+                yapAnimationContainer.replaceChild(yap1Gif, oldYapGif);
+            } else {
+                yapAnimationContainer.appendChild(yap1Gif);
+            }
+            
+            yap1Gif.style.animation = 'fadeOut 7s linear forwards';
+            
+            setTimeout(() => {
+                if (yapAnimationContainer.contains(yap1Gif)) {
+                    yapAnimationContainer.removeChild(yap1Gif);
+                }
+            }, 7000);
+        }
+
+        function updateYarikImage() {
+            const yarikElement = document.getElementById('yarik');
+            let yarikImage;
+            
+            if (level === 'Bronze') {
+                yarikImage = 'vis/ham1.png';
+            } else if (level === 'Master') {
+                yarikImage = 'vis/ham2.png';
+            } else if (level === 'Yarik Master') {
+                yarikImage = 'vis/ham3.png';
+            } else if (level === 'Kazah') {
+                yarikImage = 'vis/ham4.png'; // Изменено на ham4.png для уровня Kazah
+            } else {
+                yarikImage = 'vis/ham3.png';
+            }
+            
+            yarikElement.style.backgroundImage = `url('${yarikImage}'), url('circle@Фон.png')`;
+        }
+
+        let autoClickInterval = 1000;
+        let autoClickerTimeout;
+
+        function autoClicker() {
+            autoGenerateProfit();
+            autoClickerTimeout = setTimeout(autoClicker, autoClickInterval);
+        }
+
+        autoClicker();
+
+        function adjustAutoClickSpeed() {
+            let totalLevels = 0;
+            for (const upgradeType in mineUpgrades) {
+                totalLevels += mineUpgrades[upgradeType].level;
+            }
+            autoClickInterval = Math.max(100, 1000 - totalLevels * 50);
+            clearTimeout(autoClickerTimeout);
+            autoClicker();
+        }
+
+        function initializeProfit() {
+            for (const upgradeType in mineUpgrades) {
+                mineUpgrades[upgradeType].level = 0;
+                mineUpgrades[upgradeType].profit = 0;
+            }
+            updateHourlyProfit();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeMineUpgrades();
+            initializeProfit();
+        });
+
+        // Добавлена функция для смены заднего фона с эффектом fade in
+        function updateBackgroundForKazah() {
+            const body = document.body;
+            body.classList.add('kazah-background');
+
+            // Пауза для запуска перехода
+            setTimeout(() => {
+                body.classList.add('visible');
+            }, 100);
+
+            // Воспроизведение аудио на лупе
+            if (!kazahAudio) {
+                kazahAudio = new Audio('audio_rep.mp3');
+                kazahAudio.loop = true;
+                kazahAudio.volume = 0.5; // Устанавливаем громкость на 50%
+            }
+            kazahAudio.play().catch(error => {
+                console.error('Ошибка воспроизведения аудио:', error);
+            });
+        }
+    </script>
+</body>
+</html>
